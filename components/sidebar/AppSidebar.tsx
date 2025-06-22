@@ -8,9 +8,9 @@ import {
   SidebarProvider,
   SidebarTrigger,
 } from "@/components/ui/sidebar";
-// import { SignedIn } from "@/services/clerk/components/SignInStatus";
 import { AppSidebarClient } from "./_AppSidebarClient";
 import { ReactNode } from "react";
+import { SignedIn } from "@/services/clerk/components/SignInStatus";
 
 export function AppSidebar({
   children,
@@ -27,16 +27,16 @@ export function AppSidebar({
         <Sidebar collapsible="icon" className="overflow-hidden">
           <SidebarHeader className="flex-row">
             <SidebarTrigger />
-            <span className="text-xl text-nowrap">WDS Jobs</span>
+            <span className="text-xl text-nowrap">My Job</span>
           </SidebarHeader>
           <SidebarContent>{content}</SidebarContent>
-          {/* <SignedIn>
+          <SignedIn>
             <SidebarFooter>
               <SidebarMenu>
                 <SidebarMenuItem>{footerButton}</SidebarMenuItem>
               </SidebarMenu>
             </SidebarFooter>
-          </SignedIn> */}
+          </SignedIn>
         </Sidebar>
         <main className="flex-1">{children}</main>
       </AppSidebarClient>
