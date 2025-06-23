@@ -7,6 +7,7 @@ import { useIsDarkMode } from "@/hooks/useIsDarkMode";
 
 export function ClerkProvider({ children }: { children: ReactNode }) {
   const isDarkMode = useIsDarkMode();
+
   return (
     // <Suspense>
     <OriginalClerkProvider
