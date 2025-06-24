@@ -1,13 +1,13 @@
 import { inngest } from "@/services/inngest/client";
 import { serve } from "inngest/next";
 import {
-  //   clerkCreateOrganization,
+  clerkCreateOrganization,
   //   clerkCreateOrgMembership,
   clerkCreateUser,
-  //   clerkDeleteOrganization,
+  clerkDeleteOrganization,
   //   clerkDeleteOrgMembership,
   clerkDeleteUser,
-  //   clerkUpdateOrganization,
+  clerkUpdateOrganization,
   clerkUpdateUser,
 } from "@/services/inngest/functions/clerk";
 // import {
@@ -25,9 +25,9 @@ export const { GET, POST, PUT } = serve({
     clerkCreateUser,
     clerkUpdateUser,
     clerkDeleteUser,
-    // clerkCreateOrganization,
-    // clerkUpdateOrganization,
-    // clerkDeleteOrganization,
+    clerkCreateOrganization,
+    clerkUpdateOrganization,
+    clerkDeleteOrganization,
     // clerkCreateOrgMembership,
     // clerkDeleteOrgMembership,
     // createAiSummaryOfUploadedResume,

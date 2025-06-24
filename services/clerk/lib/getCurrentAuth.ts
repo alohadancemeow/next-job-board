@@ -1,11 +1,8 @@
 import { db } from "@/drizzle/db";
-import {
-  // OrganizationTable,
-  UserTable,
-} from "@/drizzle/schema";
-// import { getOrganizationIdTag } from "@/features/organizations/db/cache/organizations";
+import { OrganizationTable, UserTable } from "@/drizzle/schema";
 import { getUserIdTag } from "@/features/users/db/cache/users";
 import { cacheTag } from "next/dist/server/use-cache/cache-tag";
+import { getOrganizationIdTag } from "@/features/organizations/db/cache/organizations";
 import { auth } from "@clerk/nextjs/server";
 import { eq } from "drizzle-orm";
 
@@ -18,15 +15,15 @@ export async function getCurrentUser({ allData = false } = {}) {
   };
 }
 
-// export async function getCurrentOrganization({ allData = false } = {}) {
-//   const { orgId } = await auth();
+export async function getCurrentOrganization({ allData = false } = {}) {
+  const { orgId } = await auth();
 
-//   return {
-//     orgId,
-//     organization:
-//       allData && orgId != null ? await getOrganization(orgId) : undefined,
-//   };
-// }
+  return {
+    orgId,
+    organization:
+      allData && orgId != null ? await getOrganization(orgId) : undefined,
+  };
+}
 
 async function getUser(id: string) {
   "use cache";
@@ -37,11 +34,11 @@ async function getUser(id: string) {
   });
 }
 
-// async function getOrganization(id: string) {
-//   //   "use cache";
-//   //   cacheTag(getOrganizationIdTag(id));
+async function getOrganization(id: string) {
+  "use cache";
+  cacheTag(getOrganizationIdTag(id));
 
-//   return db.query.OrganizationTable.findFirst({
-//     where: eq(OrganizationTable.id, id),
-//   });
-// }
+  return db.query.OrganizationTable.findFirst({
+    where: eq(OrganizationTable.id, id),
+  });
+}
