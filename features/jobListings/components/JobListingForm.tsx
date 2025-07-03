@@ -36,19 +36,18 @@ import {
   formatWageInterval,
 } from "../lib/formatters";
 import { StateSelectItems } from "./StateSelectItems";
-// import { MarkdownEditor } from "@/components/markdown/MarkdownEditor";
 import { Button } from "@/components/ui/button";
-// import { LoadingSwap } from "@/components/LoadingSwap";
 import { createJobListing, updateJobListing } from "../actions/actions";
-// import { toast } from "sonner";
+import { toast } from "sonner";
 import { LoadingSwap } from "@/components/LoadingSwap";
+import { MarkdownEditor } from "@/components/markdown/MarkdownEditor";
 
 const NONE_SELECT_VALUE = "none";
 
 export function JobListingForm({
   jobListing,
 }: {
-  jobListing: Pick<
+  jobListing?: Pick<
     typeof JobListingTable.$inferSelect,
     | "title"
     | "description"
@@ -83,10 +82,11 @@ export function JobListingForm({
       : createJobListing;
 
     const res = await action(data);
+    console.log(res);
 
-    // if (res.error) {
-    //   toast.error(res.message);
-    // }
+    if (res.error) {
+      toast.error(res.message);
+    }
   }
 
   return (
@@ -204,6 +204,7 @@ export function JobListingForm({
                           Clear
                         </SelectItem>
                       )}
+                      {/* State Select Items */}
                       <StateSelectItems />
                     </SelectContent>
                   </Select>
@@ -293,7 +294,7 @@ export function JobListingForm({
             <FormItem>
               <FormLabel>Description</FormLabel>
               <FormControl>
-                {/* <MarkdownEditor {...field} markdown={field.value} /> */}
+                <MarkdownEditor {...field} markdown={field.value} />
               </FormControl>
               <FormMessage />
             </FormItem>
@@ -302,7 +303,7 @@ export function JobListingForm({
         <Button
           disabled={form.formState.isSubmitting}
           type="submit"
-          className="w-full"
+          className="w-full cursor-pointer"
         >
           <LoadingSwap isLoading={form.formState.isSubmitting}>
             Create Job Listing

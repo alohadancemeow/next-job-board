@@ -20,7 +20,7 @@ import {
   getJobListingIdTag,
 } from "../db/cache/jobListings";
 import { cacheTag } from "next/dist/server/use-cache/cache-tag";
-// import { hasOrgUserPermission } from "@/services/clerk/lib/orgUserPermissions";
+import { hasOrgUserPermission } from "@/services/clerk/lib/orgUserPermissions";
 // import { getNextJobListingStatus } from "../lib/utils";
 // import {
 //   hasReachedMaxFeaturedJobListings,
@@ -28,64 +28,90 @@ import { cacheTag } from "next/dist/server/use-cache/cache-tag";
 // } from "../lib/planfeatureHelpers";
 // import { getMatchingJobListings } from "@/services/inngest/ai/getMatchingJobListings";
 
+// # Create Job Listing
+// 1. Check if user has permission to create a job listing
+// 2. Parse the job listing data
+// 3. Insert the job listing into the database
+// 4. Redirect to the job listing page
 export async function createJobListing(
   unsafeData: z.infer<typeof jobListingSchema>
 ) {
-  //   const { orgId } = await getCurrentOrganization();
-  //   if (
-  //     orgId == null ||
-  //     !(await hasOrgUserPermission("org:job_listings:create"))
-  //   ) {
-  //     return {
-  //       error: true,
-  //       message: "You don't have permission to create a job listing",
-  //     };
-  //   }
-  //   const { success, data } = jobListingSchema.safeParse(unsafeData);
-  //   if (!success) {
-  //     return {
-  //       error: true,
-  //       message: "There was an error creating your job listing",
-  //     };
-  //   }
-  //   const jobListing = await insertJobListing({
-  //     ...data,
-  //     organizationId: orgId,
-  //     status: "draft",
-  //   });
-  //   redirect(`/employer/job-listings/${jobListing.id}`);
+  const { orgId } = await getCurrentOrganization();
+  console.log(orgId, "orgId");
+
+  const hasPermission = await hasOrgUserPermission("org:job_listings:create");
+  console.log(hasPermission, "hasPermission");
+
+  // if (orgId == null || !hasPermission) {
+  //   return {
+  //     error: true,
+  //     message: "You don't have permission to create a job listing",
+  //   };
+  // }
+
+  if (orgId == null) {
+    return {
+      error: true,
+      message: "You don't have permission to create a job listing",
+    };
+  }
+
+  const { success, data } = jobListingSchema.safeParse(unsafeData);
+  if (!success) {
+    return {
+      error: true,
+      message: "There was an error creating your job listing",
+    };
+  }
+
+  const jobListing = await insertJobListing({
+    ...data,
+    organizationId: orgId,
+    status: "draft",
+  });
+
+  redirect(`/employer/job-listings/${jobListing.id}`);
 }
 
+// # Update Job Listing
+// 1. Check if user has permission to update a job listing
+// 2. Parse the job listing data
+// 3. Update the job listing in the database
+// 4. Redirect to the job listing page
 export async function updateJobListing(
   id: string,
   unsafeData: z.infer<typeof jobListingSchema>
 ) {
-  //   const { orgId } = await getCurrentOrganization();
-  //   if (
-  //     orgId == null ||
-  //     !(await hasOrgUserPermission("org:job_listings:update"))
-  //   ) {
-  //     return {
-  //       error: true,
-  //       message: "You don't have permission to update this job listing",
-  //     };
-  //   }
-  //   const { success, data } = jobListingSchema.safeParse(unsafeData);
-  //   if (!success) {
-  //     return {
-  //       error: true,
-  //       message: "There was an error updating your job listing",
-  //     };
-  //   }
-  //   const jobListing = await getJobListing(id, orgId);
-  //   if (jobListing == null) {
-  //     return {
-  //       error: true,
-  //       message: "There was an error updating your job listing",
-  //     };
-  //   }
-  //   const updatedJobListing = await updateJobListingDb(id, data);
-  //   redirect(`/employer/job-listings/${updatedJobListing.id}`);
+  const { orgId } = await getCurrentOrganization();
+  if (
+    orgId == null ||
+    !(await hasOrgUserPermission("org:job_listings:update"))
+  ) {
+    return {
+      error: true,
+      message: "You don't have permission to update this job listing",
+    };
+  }
+
+  const { success, data } = jobListingSchema.safeParse(unsafeData);
+  if (!success) {
+    return {
+      error: true,
+      message: "There was an error updating your job listing",
+    };
+  }
+
+  const jobListing = await getJobListing(id, orgId);
+  if (jobListing == null) {
+    return {
+      error: true,
+      message: "There was an error updating your job listing",
+    };
+  }
+
+  const updatedJobListing = await updateJobListingDb(id, data);
+
+  redirect(`/employer/job-listings/${updatedJobListing.id}`);
 }
 
 export async function toggleJobListingStatus(id: string) {
@@ -113,6 +139,8 @@ export async function toggleJobListingStatus(id: string) {
   //         : undefined,
   //   });
   //   return { error: false };
+
+  return { error: false };
 }
 
 export async function toggleJobListingFeatured(id: string) {
@@ -136,6 +164,8 @@ export async function toggleJobListingFeatured(id: string) {
   //     isFeatured: newFeaturedStatus,
   //   });
   //   return { error: false };
+
+  return { error: false };
 }
 
 export async function deleteJobListing(id: string) {
@@ -152,6 +182,8 @@ export async function deleteJobListing(id: string) {
   //   }
   //   await deleteJobListingDb(id);
   //   redirect("/employer");
+
+  return { error: false };
 }
 
 // export async function getAiJobListingSearchResults(
@@ -194,17 +226,18 @@ export async function deleteJobListing(id: string) {
 //   return { error: false, jobIds: matchedListings };
 // }
 
-// async function getJobListing(id: string, orgId: string) {
-//   "use cache";
-//   cacheTag(getJobListingIdTag(id));
+async function getJobListing(id: string, orgId: string) {
+  "use cache";
 
-//   return db.query.JobListingTable.findFirst({
-//     where: and(
-//       eq(JobListingTable.id, id),
-//       eq(JobListingTable.organizationId, orgId)
-//     ),
-//   });
-// }
+  cacheTag(getJobListingIdTag(id));
+
+  return db.query.JobListingTable.findFirst({
+    where: and(
+      eq(JobListingTable.id, id),
+      eq(JobListingTable.organizationId, orgId)
+    ),
+  });
+}
 
 // async function getPublicJobListings() {
 //   "use cache";
