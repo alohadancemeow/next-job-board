@@ -42,12 +42,12 @@ export async function createJobListing(
   const hasPermission = await hasOrgUserPermission("org:job_listings:create");
   console.log(hasPermission, "hasPermission");
 
-  // if (orgId == null || !hasPermission) {
-  //   return {
-  //     error: true,
-  //     message: "You don't have permission to create a job listing",
-  //   };
-  // }
+  if (orgId == null || !hasPermission) {
+    return {
+      error: true,
+      message: "You don't have permission to create a job listing",
+    };
+  }
 
   if (orgId == null) {
     return {

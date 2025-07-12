@@ -9,6 +9,8 @@ type UserPermission =
   | "org:job_listing_applications:change_stage";
 
 export async function hasOrgUserPermission(permission: UserPermission) {
-  const { has } = await auth();
-  return has({ permission });
+  const permissionAuth = await auth();
+  console.log(permissionAuth, "permissionAuth");
+
+  return permissionAuth.has({ permission });
 }
