@@ -16,7 +16,7 @@ import {
   JobListingStatus,
   JobListingTable,
 } from "@/drizzle/schema";
-// import { getJobListingApplicationJobListingTag } from "@/features/jobListingApplications/db/cache/jobListingApplications";
+import { getJobListingApplicationJobListingTag } from "@/features/jobListingApplications/db/cache/jobListingApplications";
 import { getJobListingOrganizationTag } from "@/features/jobListings/db/cache/jobListings";
 import { SidebarOrganizationButton } from "@/features/organizations/components/SidebarOrganizationButton";
 import { getCurrentOrganization } from "@/services/clerk/lib/getCurrentAuth";
@@ -135,9 +135,9 @@ async function getJobListings(orgId: string) {
     .groupBy(JobListingApplicationTable.jobListingId, JobListingTable.id)
     .orderBy(desc(JobListingTable.createdAt));
 
-  // data.forEach((jobListing) => {
-  //   cacheTag(getJobListingApplicationJobListingTag(jobListing.id));
-  // });
+  data.forEach((jobListing) => {
+    cacheTag(getJobListingApplicationJobListingTag(jobListing.id));
+  });
 
   return data;
 }

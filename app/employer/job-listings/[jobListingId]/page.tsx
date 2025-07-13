@@ -71,6 +71,7 @@ async function SuspendedPage({ params }: Props) {
 
   const { jobListingId } = await params;
   const jobListing = await getJobListing(jobListingId, orgId);
+
   if (jobListing == null) return notFound();
 
   return (
@@ -85,6 +86,7 @@ async function SuspendedPage({ params }: Props) {
             <JobListingBadges jobListing={jobListing} />
           </div>
         </div>
+
         <div className="flex items-center gap-2 empty:-mt-4">
           <AsyncIf
             condition={() => hasOrgUserPermission("org:job_listings:update")}
