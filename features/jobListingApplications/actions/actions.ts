@@ -32,6 +32,7 @@ export async function createJobListingApplication(
     error: true,
     message: "You don't have permission to submit an application",
   };
+
   const { userId } = await getCurrentUser();
   if (userId == null) return permissionError;
 
@@ -39,6 +40,7 @@ export async function createJobListingApplication(
     getUserResume(userId),
     getPublicJobListing(jobListingId),
   ]);
+  
   if (userResume == null || jobListing == null) return permissionError;
 
   const { success, data } =
