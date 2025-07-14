@@ -10,7 +10,7 @@ type UserPermission =
 
 export async function hasOrgUserPermission(permission: UserPermission) {
   const permissionAuth = await auth();
-  console.log(permissionAuth, "permissionAuth");
+  // console.log(permissionAuth, "permissionAuth");
 
   return permissionAuth.has({ permission });
 }

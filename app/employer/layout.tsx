@@ -115,6 +115,15 @@ async function JobListingMenu({ orgId }: { orgId: string }) {
     ));
 }
 
+/*
+  Retrieves all job listings for a given organization, including each listing's title, status, and the number of applications it has received.
+  Steps:
+  1. Applies a cache tag for the organization's job listings to optimize data fetching and revalidation.
+  2. Queries the database to select job listings for the organization, joining with the applications table to count applications per listing.
+  3. Groups and orders the results so each job listing includes its application count and is sorted by creation date (most recent first).
+  4. For each job listing, applies a cache tag for its applications to ensure cache invalidation when applications change.
+  5. Returns the aggregated job listing data.
+*/
 async function getJobListings(orgId: string) {
   "use cache";
   cacheTag(getJobListingOrganizationTag(orgId));
