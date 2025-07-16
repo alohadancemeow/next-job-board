@@ -1,13 +1,10 @@
 "use server";
 
 import { z } from "zod";
-import {
-  // jobListingAiSearchSchema,
-  jobListingSchema,
-} from "./schemas";
+import { jobListingAiSearchSchema, jobListingSchema } from "./schemas";
 import {
   getCurrentOrganization,
-  // getCurrentUser,
+  getCurrentUser,
 } from "@/services/clerk/lib/getCurrentAuth";
 import { redirect } from "next/navigation";
 import {
@@ -19,7 +16,7 @@ import { db } from "@/drizzle/db";
 import { and, eq } from "drizzle-orm";
 import { JobListingTable } from "@/drizzle/schema";
 import {
-  // getJobListingGlobalTag,
+  getJobListingGlobalTag,
   getJobListingIdTag,
 } from "../db/cache/jobListings";
 import { cacheTag } from "next/dist/server/use-cache/cache-tag";
@@ -29,7 +26,7 @@ import {
   hasReachedMaxFeaturedJobListings,
   hasReachedMaxPublishedJobListings,
 } from "../lib/planfeatureHelpers";
-// import { getMatchingJobListings } from "@/services/inngest/ai/getMatchingJobListings";
+import { getMatchingJobListings } from "@/services/inngest/ai/getMatchingJobListings";
 
 // # Create Job Listing
 // 1. Check if user has permission to create a job listing
@@ -209,46 +206,48 @@ export async function deleteJobListing(id: string) {
   redirect("/employer");
 }
 
-// export async function getAiJobListingSearchResults(
-//   unsafe: z.infer<typeof jobListingAiSearchSchema>
-// ): Promise<
-//   { error: true; message: string } | { error: false; jobIds: string[] }
-// > {
-//   const { success, data } = jobListingAiSearchSchema.safeParse(unsafe);
-//   if (!success) {
-//     return {
-//       error: true,
-//       message: "There was an error processing your search query",
-//     };
-//   }
+// # Get a job by ai search
+export async function getAiJobListingSearchResults(
+  unsafe: z.infer<typeof jobListingAiSearchSchema>
+): Promise<
+  { error: true; message: string } | { error: false; jobIds: string[] }
+> {
+  const { success, data } = jobListingAiSearchSchema.safeParse(unsafe);
+  if (!success) {
+    return {
+      error: true,
+      message: "There was an error processing your search query",
+    };
+  }
 
-//   const { userId } = await getCurrentUser();
-//   if (userId == null) {
-//     return {
-//       error: true,
-//       message: "You need an account to use AI job search",
-//     };
-//   }
+  const { userId } = await getCurrentUser();
+  if (userId == null) {
+    return {
+      error: true,
+      message: "You need an account to use AI job search",
+    };
+  }
 
-//   const allListings = await getPublicJobListings();
-//   const matchedListings = await getMatchingJobListings(
-//     data.query,
-//     allListings,
-//     {
-//       maxNumberOfJobs: 10,
-//     }
-//   );
+  const allListings = await getPublicJobListings();
+  const matchedListings = await getMatchingJobListings(
+    data.query,
+    allListings,
+    {
+      maxNumberOfJobs: 10,
+    }
+  );
 
-//   if (matchedListings.length === 0) {
-//     return {
-//       error: true,
-//       message: "No jobs match your search criteria",
-//     };
-//   }
+  if (matchedListings.length === 0) {
+    return {
+      error: true,
+      message: "No jobs match your search criteria",
+    };
+  }
 
-//   return { error: false, jobIds: matchedListings };
-// }
+  return { error: false, jobIds: matchedListings };
+}
 
+// # Helper functions
 async function getJobListing(id: string, orgId: string) {
   "use cache";
 
@@ -262,11 +261,11 @@ async function getJobListing(id: string, orgId: string) {
   });
 }
 
-// async function getPublicJobListings() {
-//   "use cache";
-//   cacheTag(getJobListingGlobalTag());
+async function getPublicJobListings() {
+  "use cache";
+  cacheTag(getJobListingGlobalTag());
 
-//   return db.query.JobListingTable.findMany({
-//     where: eq(JobListingTable.status, "published"),
-//   });
-// }
+  return db.query.JobListingTable.findMany({
+    where: eq(JobListingTable.status, "published"),
+  });
+}

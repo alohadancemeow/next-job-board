@@ -18,6 +18,7 @@ export async function updateUserNotificationSettings(
 
   const { success, data } =
     userNotificationSettingsSchema.safeParse(unsafeData);
+
   if (!success) {
     return {
       error: true,

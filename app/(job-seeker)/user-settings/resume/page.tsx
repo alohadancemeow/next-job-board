@@ -62,8 +62,6 @@ async function ResumeDetails() {
 
 async function AISummaryCard() {
   const { userId } = await getCurrentUser();
-  console.log(userId, "userId");
-
   if (userId == null) return notFound();
 
   const userResume = await getUserResume(userId);

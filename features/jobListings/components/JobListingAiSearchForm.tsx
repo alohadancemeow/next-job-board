@@ -16,7 +16,7 @@ import {
 import { Textarea } from "@/components/ui/textarea";
 import { Button } from "@/components/ui/button";
 import { LoadingSwap } from "@/components/LoadingSwap";
-// import { getAiJobListingSearchResults } from "../actions/actions";
+import { getAiJobListingSearchResults } from "../actions/actions";
 import { toast } from "sonner";
 import { useRouter } from "next/navigation";
 
@@ -28,14 +28,17 @@ export function JobListingAiSearchForm() {
   });
 
   async function onSubmit(data: z.infer<typeof jobListingAiSearchSchema>) {
-    // const results = await getAiJobListingSearchResults(data);
-    // if (results.error) {
-    //   toast.error(results.message);
-    //   return;
-    // }
-    // const params = new URLSearchParams();
-    // results.jobIds.forEach((id) => params.append("jobIds", id));
-    // router.push(`/?${params.toString()}`);
+    const results = await getAiJobListingSearchResults(data);
+
+    if (results.error) {
+      toast.error(results.message);
+      return;
+    }
+
+    const params = new URLSearchParams();
+
+    results.jobIds.forEach((id) => params.append("jobIds", id));
+    router.push(`/?${params.toString()}`);
   }
 
   return (
