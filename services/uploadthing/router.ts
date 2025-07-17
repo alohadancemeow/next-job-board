@@ -10,7 +10,14 @@ import { uploadthing } from "./client";
 
 const f = createUploadthing();
 
-export const customFileRouter = {
+// # Resume Uploader Tool
+// 1. Check if user is signed in
+// 2. Check if user has permission to upload resume
+// 3. Parse the resume file
+// 4. Upload the resume file to UploadThing
+// 5. Update the user's resume file key in the database
+// 6. Return success message
+export const customFileRouter: FileRouter = {
   resumeUploader: f(
     {
       pdf: {
@@ -47,7 +54,7 @@ export const customFileRouter = {
 
 export type CustomFileRouter = typeof customFileRouter;
 
-// Get user's resume from database
+// # Helper functions: Get user resume file key
 async function getUserResumeFileKey(userId: string) {
   const data = await db.query.UserResumeTable.findFirst({
     where: eq(UserResumeTable.userId, userId),

@@ -8,6 +8,10 @@ import {
 } from "@/services/clerk/lib/getCurrentAuth";
 import { updateOrganizationUserSettings as updateOrganizationUserSettingsDb } from "@/features/organizations/db/organizationUserSettings";
 
+// # Update Organization User Settings
+// 1. Check if user is signed in
+// 2. Check if user has permission to update organization user settings
+// 3. Update organization user settings in the database
 export async function updateOrganizationUserSettings(
   unsafeData: z.infer<typeof organizationUserSettingsSchema>
 ) {

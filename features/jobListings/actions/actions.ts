@@ -117,6 +117,7 @@ export async function updateJobListing(
 // # Toggle Job Listing Status
 // 1. Check if user has permission to update a job listing's status
 // 2. Update the job listing in the database
+// 3. Return success message
 export async function toggleJobListingStatus(id: string) {
   const error = {
     error: true,
@@ -153,6 +154,7 @@ export async function toggleJobListingStatus(id: string) {
 // # Toogle Job Listing Featured
 // 1. Check if user has permission to update a job listing's featured status
 // 2. Update the job listing in the database
+// 3. Return success message
 export async function toggleJobListingFeatured(id: string) {
   const error = {
     error: true,
@@ -207,6 +209,10 @@ export async function deleteJobListing(id: string) {
 }
 
 // # Get a job by ai search
+// 1. Check if user has permission to use ai job search
+// 2. Parse the search query
+// 3. Get the job listings from the database
+// 4. Return the job listings
 export async function getAiJobListingSearchResults(
   unsafe: z.infer<typeof jobListingAiSearchSchema>
 ): Promise<
@@ -248,6 +254,11 @@ export async function getAiJobListingSearchResults(
 }
 
 // # Helper functions
+// 1. Get a job listing by id and organization id
+// 2. Check if the job listing is published
+// 3. Return the job listing
+// 4. Get all published job listings from the database
+// 5. Return the job listings
 async function getJobListing(id: string, orgId: string) {
   "use cache";
 

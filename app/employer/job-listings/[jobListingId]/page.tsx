@@ -314,10 +314,10 @@ async function Applications({ jobListingId }: { jobListingId: string }) {
         ) : null,
       }))}
       canUpdateRating={await hasOrgUserPermission(
-        "org:job_listing_applications:change_rating"
+        "org:job_listings_applications:change_rating"
       )}
       canUpdateStage={await hasOrgUserPermission(
-        "org:job_listing_applications:change_stage"
+        "org:job_listings_applications:change_stage"
       )}
     />
   );

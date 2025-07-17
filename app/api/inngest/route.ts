@@ -11,9 +11,9 @@ import {
   clerkUpdateUser,
 } from "@/services/inngest/functions/clerk";
 import {
-  // prepareDailyOrganizationUserApplicationNotifications,
+  prepareDailyOrganizationUserApplicationNotifications,
   prepareDailyUserJobListingNotifications,
-  // sendDailyOrganizationUserApplicationEmail,
+  sendDailyOrganizationUserApplicationEmail,
   sendDailyUserJobListingEmail,
 } from "@/services/inngest/functions/email";
 import { rankApplication } from "@/services/inngest/functions/jobListingApplication";
@@ -34,7 +34,7 @@ export const { GET, POST, PUT } = serve({
     rankApplication,
     prepareDailyUserJobListingNotifications,
     sendDailyUserJobListingEmail,
-    // prepareDailyOrganizationUserApplicationNotifications,
-    // sendDailyOrganizationUserApplicationEmail,
+    prepareDailyOrganizationUserApplicationNotifications,
+    sendDailyOrganizationUserApplicationEmail,
   ],
 });

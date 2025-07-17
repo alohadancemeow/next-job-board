@@ -24,6 +24,13 @@ import {
 import { inngest } from "@/services/inngest/client";
 import { hasOrgUserPermission } from "@/services/clerk/lib/orgUserPermissions";
 
+// # Create Job Listing Application
+// 1. Check if user is signed in
+// 2. Check if user has permission to submit an application
+// 3. Parse the application data
+// 4. Insert the application into the database
+// 5. Send application created event to Inngest
+// 6. Return success message
 export async function createJobListingApplication(
   jobListingId: string,
   unsafeData: z.infer<typeof newJobListingApplicationSchema>
@@ -40,7 +47,7 @@ export async function createJobListingApplication(
     getUserResume(userId),
     getPublicJobListing(jobListingId),
   ]);
-  
+
   if (userResume == null || jobListing == null) return permissionError;
 
   const { success, data } =
@@ -70,6 +77,12 @@ export async function createJobListingApplication(
   };
 }
 
+// # Update Job Listing Application Stage
+// 1. Check if user is signed in
+// 2. Check if user has permission to update application stage
+// 3. Parse the application stage
+// 4. Update the application stage in the database
+// 5. Return success message
 export async function updateJobListingApplicationStage(
   {
     jobListingId,
@@ -92,7 +105,7 @@ export async function updateJobListingApplicationStage(
   }
 
   if (
-    !(await hasOrgUserPermission("org:job_listing_applications:change_stage"))
+    !(await hasOrgUserPermission("org:job_listings_applications:change_stage"))
   ) {
     return {
       error: true,
@@ -122,6 +135,12 @@ export async function updateJobListingApplicationStage(
   );
 }
 
+// # Update Job Listing Application Rating
+// 1. Check if user is signed in
+// 2. Check if user has permission to update application rating
+// 3. Parse the application rating
+// 4. Update the application rating in the database
+// 5. Return success message
 export async function updateJobListingApplicationRating(
   {
     jobListingId,
@@ -147,7 +166,7 @@ export async function updateJobListingApplicationRating(
   }
 
   if (
-    !(await hasOrgUserPermission("org:job_listing_applications:change_stage"))
+    !(await hasOrgUserPermission("org:job_listings_applications:change_stage"))
   ) {
     return {
       error: true,
@@ -177,6 +196,10 @@ export async function updateJobListingApplicationRating(
   );
 }
 
+// # Helper functions:
+// 1. Get public job listing
+// 2. Get job listing
+// 3. Get user resume
 async function getPublicJobListing(id: string) {
   "use cache";
   cacheTag(getJobListingIdTag(id));
