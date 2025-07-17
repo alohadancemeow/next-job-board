@@ -30,7 +30,7 @@ import {
   updateJobListingApplicationRating,
   updateJobListingApplicationStage,
 } from "../actions/actions";
-import { RatingIcons } from "./RatignIcons";
+import { RatingIcons } from "./RatingIcons";
 import { RATING_OPTIONS } from "../data/constants";
 import {
   Dialog,
